@@ -1,0 +1,17 @@
+---
+- name: Deploy Scientific Calculator
+  hosts: localhost
+  tasks:
+    - name: Pull the latest image from Docker Hub
+      docker_image:
+        name: deeksha2008/scientific-calculator:latest
+        source: pull
+
+    - name: Run the Calculator Container
+      docker_container:
+        name: scientific-calc-app
+        image: deeksha2008/scientific-calculator:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8081:8080"

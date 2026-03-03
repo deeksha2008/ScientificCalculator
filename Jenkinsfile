@@ -5,9 +5,10 @@ pipeline {
         DOCKER_HUB_USER = 'deeksha2008' 
         IMAGE_NAME = 'scientific-calculator'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        // Absolute paths for MacBook Air compatibility
         MAVEN_PATH = '/opt/homebrew/bin/mvn'
-        DOCKER_PATH = '/usr/local/bin/docker' 
+        DOCKER_PATH = '/usr/local/bin/docker'
+        // This helps bypass Mac credential helper issues
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
     stages {
@@ -28,6 +29,8 @@ pipeline {
         stage('Build & Tag Docker Image') {
             steps {
                 echo 'Step 3: Creating Docker Image...'
+                // Create a temporary docker config directory to avoid Mac Keychain errors
+                sh "mkdir -p ${DOCKER_CONFIG}"
                 sh "${DOCKER_PATH} build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
                 sh "${DOCKER_PATH} tag ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
             }
@@ -36,11 +39,19 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 echo 'Step 4: Pushing to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                    sh "echo \$DOCKER_PASS | ${DOCKER_PATH} login -u \$DOCKER_USER --password-stdin"
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USER_VAR')]) {
+                    sh "echo ${DOCKER_HUB_PASSWORD} | ${DOCKER_PATH} login -u ${DOCKER_HUB_USER_VAR} --password-stdin"
                     sh "${DOCKER_PATH} push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "${DOCKER_PATH} push ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
                 }
+            }
+        }
+
+        stage('Deploy with Ansible') {
+            steps {
+                echo 'Step 5: Deploying to Localhost via Ansible...'
+                // This runs the playbook we created earlier
+                sh "ansible-playbook deploy.yml"
             }
         }
     }
@@ -50,16 +61,11 @@ pipeline {
             echo 'Build Process Completed.'
         }
         success {
-            echo 'Sending Success Email...'
-            mail to: 'deeksha.jain2008@gmail.com', 
-                 subject: "SUCCESS: Build #${env.BUILD_NUMBER}",
-                 body: "Project build successful! Image: deeksha2008/scientific-calculator"
+            echo 'Pipeline Success! Image is on Docker Hub and Deployed.'
         }
         failure {
-            echo 'Sending Failure Email...'
-            mail to: 'deeksha.jain2008@gmail.com',
-                 subject: "FAILURE: Build #${env.BUILD_NUMBER}",
-                 body: "Build failed. Check Jenkins logs."
+            echo 'Pipeline Failed. Check logs for errors.'
         }
     }
 }
+
