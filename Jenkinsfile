@@ -12,14 +12,14 @@ pipeline {
         stage('Unit Test') {
             steps {
                 echo 'Step 1: Running Maven Unit Tests...'
-                sh 'mvn test'
+                sh '/opt/homebrew/bin/mvn test'
             }
         }
 
         stage('Build executable') {
             steps {
                 echo 'Step 2: Building Jar file (Maven Package)...'
-                sh 'mvn clean package'
+                sh '/opt/homebrew/bin/mvn clean package'
             }
         }
 
