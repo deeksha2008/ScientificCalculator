@@ -52,7 +52,7 @@ pipeline {
             steps {
                 echo 'Step 5: Deploying to Localhost via Ansible...'
                 // This runs the playbook we created earlier
-                sh "${ANSIBLE_PATH} deploy.yml"
+                sh "${ANSIBLE_PATH} -i inventory deploy.yml"
             }
         }
     }

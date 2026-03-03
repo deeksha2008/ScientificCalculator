@@ -1,17 +1,23 @@
 ---
-- name: Deploy Scientific Calculator
+- name: Deploy Scientific Calculator Container
   hosts: localhost
+  connection: local
   tasks:
-    - name: Pull the latest image from Docker Hub
+    - name: Pull Docker Image
       docker_image:
-        name: deeksha2008/scientific-calculator:latest
+        name: "deeksha2008/scientific-calculator:latest"
         source: pull
+      register: docker_pull_result
 
-    - name: Run the Calculator Container
-      docker_container:
-        name: scientific-calc-app
-        image: deeksha2008/scientific-calculator:latest
-        state: started
-        restart_policy: always
-        ports:
-          - "8081:8080"
+    - name: Display Docker Pull Result
+      debug:
+        var: docker_pull_result
+
+    - name: Stop old container
+      shell: docker stop scientific-calc-app || true
+      
+    - name: Remove old container
+      shell: docker rm scientific-calc-app || true
+     
+    - name: Running container
+      shell: docker run -d --name scientific-calc-app -p 8081:8080 deeksha2008/scientific-calculator:latest
