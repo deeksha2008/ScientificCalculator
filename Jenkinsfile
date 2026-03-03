@@ -8,6 +8,7 @@ pipeline {
         MAVEN_PATH = '/opt/homebrew/bin/mvn'
         DOCKER_PATH = '/usr/local/bin/docker'
         ANSIBLE_PATH = '/opt/homebrew/bin/ansible-playbook'
+        INVENTORY_FILE = 'inventory'
         // This helps bypass Mac credential helper issues
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -52,7 +53,7 @@ pipeline {
             steps {
                 echo 'Step 5: Deploying to Localhost via Ansible...'
                 // This runs the playbook we created earlier
-                sh "${ANSIBLE_PATH} -i inventory deploy.yml"
+                sh "${ANSIBLE_PATH} -i ${INVENTORY_FILE} deploy.yml"
             }
         }
     }
