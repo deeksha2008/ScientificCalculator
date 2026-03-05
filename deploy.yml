@@ -13,5 +13,5 @@
       shell: /usr/local/bin/docker rm scientific-calc-app || true
      
     - name: Running container
-      shell: /usr/local/bin/docker run -d --name scientific-calc-app -p 8081:8080 deeksha2008/scientific-calculator:latest
+      shell: /usr/local/bin/docker run -d -it --name scientific-calc-app -p 8081:8080 deeksha2008/scientific-calculator:latest
 
