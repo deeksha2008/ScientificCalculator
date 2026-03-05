@@ -45,7 +45,7 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 echo 'Step 5: Deploying to Localhost via Ansible...'
-                sh '/opt/homebrew/bin/ansible-playbook -i inventory deploy.yml'
+               sh 'export ANSIBLE_HOST_KEY_CHECKING=False && /opt/homebrew/bin/ansible-playbook -i inventory deploy.yml'
             }
         }
     }
