@@ -1,7 +1,6 @@
 ---
 - name: Deploy Scientific Calculator Container
   hosts: localhost
-  connection: local
   tasks:
     - name: Pull Docker Image from Hub
       shell: /usr/local/bin/docker pull deeksha2008/scientific-calculator:latest
