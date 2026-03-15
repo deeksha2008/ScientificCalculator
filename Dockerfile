@@ -1,4 +1,4 @@
-# Use a lightweight Java Runtime
+ # Use a lightweight Java Runtime
 FROM eclipse-temurin:11-jre
 
 # Set the working directory inside the container
