@@ -5,28 +5,72 @@ import org.junit.Test;
 
 public class CalculatorTest {
 
-    // 1. Factorial Test
+    // --- Existing tests ---
+
     @Test
     public void testFactorial() {
-        assertEquals("Factorial of 5 should be 120", 120.0, Calculator.factorial(5), 0.001);
-        assertEquals("Factorial of 0 should be 1", 1.0, Calculator.factorial(0), 0.001);
+        assertEquals(120.0, Calculator.factorial(5), 0.001);
+        assertEquals(1.0,   Calculator.factorial(0), 0.001);
     }
-    
-    // 2. Square Root Test
+
+    @Test
+    public void testFactorialNegative() {
+        assertTrue(Double.isNaN(Calculator.factorial(-1)));
+    }
+
     @Test
     public void testSquareRoot() {
-        assertEquals("Square root of 16 should be 4", 4.0, Calculator.sqrt(16.0), 0.001);
+        assertEquals(4.0, Calculator.sqrt(16.0), 0.001);
     }
 
-    // 3. Natural Logarithm Test
+    @Test
+    public void testSquareRootNegative() {
+        assertTrue(Double.isNaN(Calculator.sqrt(-9)));
+    }
+
     @Test
     public void testNaturalLog() {
-        assertEquals("ln(1) should be 0", 0.0, Calculator.log(1.0), 0.001);
+        assertEquals(0.0, Calculator.log(1.0), 0.001);
     }
 
-    // 4. Power Function Test
+    @Test
+    public void testNaturalLogInvalid() {
+        assertTrue(Double.isNaN(Calculator.log(0)));
+        assertTrue(Double.isNaN(Calculator.log(-5)));
+    }
+
     @Test
     public void testPower() {
-        assertEquals("2 raised to 3 should be 8", 8.0, Calculator.power(2.0, 3.0), 0.001);
+        assertEquals(8.0, Calculator.power(2.0, 3.0), 0.001);
+    }
+
+    // --- New arithmetic tests ---
+
+    @Test
+    public void testAdd() {
+        assertEquals(7.0,  Calculator.add(3.0, 4.0),  0.001);
+        assertEquals(-1.0, Calculator.add(-3.0, 2.0), 0.001);
+    }
+
+    @Test
+    public void testSubtract() {
+        assertEquals(1.0,  Calculator.subtract(5.0, 4.0),  0.001);
+        assertEquals(-7.0, Calculator.subtract(-3.0, 4.0), 0.001);
+    }
+
+    @Test
+    public void testMultiply() {
+        assertEquals(12.0, Calculator.multiply(3.0, 4.0),  0.001);
+        assertEquals(0.0,  Calculator.multiply(0.0, 99.0), 0.001);
+    }
+
+    @Test
+    public void testDivide() {
+        assertEquals(2.5, Calculator.divide(5.0, 2.0), 0.001);
+    }
+
+    @Test
+    public void testDivideByZero() {
+        assertTrue(Double.isNaN(Calculator.divide(10.0, 0)));
     }
 }
