@@ -1,7 +1,12 @@
-FROM eclipse-temurin:11-jre-alpine
+# 1. Use a multi-arch compatible base image
+FROM openjdk:11-jre-slim
 
+# 2. Set the working directory inside the container
 WORKDIR /app
 
-COPY target/scientific-calculator-1.0-SNAPSHOT.jar app.jar
+# 3. Copy the jar file from the target folder to the container
+# Ensure the name matches what Maven generates
+COPY target/*.jar app.jar
 
+# 4. Define the default command to run the app
 CMD ["java", "-jar", "app.jar"]
