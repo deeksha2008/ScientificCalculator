@@ -1,12 +1,9 @@
-# 1. Use a multi-arch compatible base image
-FROM openjdk:11-jre-slim
+# Use the official Eclipse Temurin image (successor to openjdk)
+FROM eclipse-temurin:11-jre
 
-# 2. Set the working directory inside the container
 WORKDIR /app
 
-# 3. Copy the jar file from the target folder to the container
-# Ensure the name matches what Maven generates
+# Ensure the wildcard matches the jar created by Maven
 COPY target/*.jar app.jar
 
-# 4. Define the default command to run the app
 CMD ["java", "-jar", "app.jar"]
